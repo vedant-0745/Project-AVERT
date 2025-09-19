@@ -28,8 +28,12 @@ AVERT is an interactive, browser-based tool that provides a dual-perspective sim
 
 4. How to Run the Prototype
 
-1.  Download the repository files (`index.html`, `style.css`, `script.js`).
-2.  Because the project uses ES Modules (`script type="module"`), it needs to be run from a local web server to avoid CORS errors.
-3.  The easiest way is to use the "Live Server" extension in VS Code.
-4.  Alternatively, you can run a simple server with Python: `python -m http.server`
-5.  Open your browser and navigate to the provided local address.
+i  Download the repository files (`index.html`, `style.css`, `script.js`).
+
+ii  Because the project uses ES Modules (`script type="module"`), it needs to be run from a local web server to avoid CORS errors.
+
+iii  The easiest way is to use the "Live Server" extension in VS Code.
+
+iv Alternatively, you can run a simple server with Python: `python -m http.server`
+
+v  Open your browser and navigate to the provided local address.
