@@ -18,10 +18,13 @@ AVERT is an interactive, browser-based tool that provides a dual-perspective sim
 
 3. Core Features Implemented
 
-a) Live NASA Data: Fetches a list of Near-Earth Objects from the NASA NeoWs API.
-b) Dynamic Physics Engine: Calculates impact energy (in Joules and Megatons of TNT) and effect radii based on user-adjustable parameters like velocity, density, and impact angle.
-c) Dual-View Interface: Combines a Three.js 3D globe for orbital mechanics with a Leaflet.js 2D map for ground-truth impact assessment.
-d) Mitigation Simulator: Allows users to apply different mitigation techniques (Kinetic Nudge, Gravity Tractor, etc.) and dynamically calculates the required effort to neutralize the threat.
+  a) Live NASA Data: Fetches a list of Near-Earth Objects from the NASA NeoWs API.
+
+  b) Dynamic Physics Engine: Calculates impact energy (in Joules and Megatons of TNT) and effect radii based on user-adjustable parameters like velocity, density, and impact angle.
+
+  c) Dual-View Interface: Combines a Three.js 3D globe for orbital mechanics with a Leaflet.js 2D map for ground-truth impact assessment.
+
+  d) Mitigation Simulator: Allows users to apply different mitigation techniques (Kinetic Nudge, Gravity Tractor, etc.) and dynamically calculates the required effort to neutralize the threat.
 
 4. How to Run the Prototype
 
