@@ -1,5 +1,7 @@
 Project AVERT: Asteroid Visualization & Emergency Response Tool
 
+🚀 LIVE DEMO: https://unique-dasik-d071f0.netlify.app/
+
 Submission for the NASA Space Apps Challenge 2025 - Jabalpur Edition.
 
 1. The Problem
