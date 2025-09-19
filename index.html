@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Project AVERT — Asteroid Visualization</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+  <div id="canvas-container"></div>
+  <div id="map-container"></div>
+
+  <div id="modal-container">
+    <div id="modal-content">
+      <button id="modal-close-btn">&times;</button>
+      <h2 id="modal-title" class="text-xl font-bold text-cyan-300 mb-4">Mitigation Strategies</h2>
+      <div id="modal-text" class="text-slate-300 space-y-3">
+        <p><strong>Kinetic Nudge:</strong> A spacecraft is deliberately crashed into an asteroid to transfer momentum and slightly change its path. NASA's DART Mission was the first successful test of this concept.</p>
+        <p><strong>Gravity Tractor:</strong> A massive spacecraft flies alongside the asteroid for an extended period (months or years). Its mutual gravitational attraction slowly pulls the asteroid onto a new, non-threatening trajectory.</p>
+        <p><strong>Laser Ablation:</strong> A powerful laser heats a spot on the asteroid's surface, causing the material to vaporize and turn into a jet of gas. This acts like a small rocket engine, gently pushing the asteroid over time.</p>
+        <p><strong>Standoff Nuclear Detonation:</strong> A nuclear device is detonated at a safe distance. The intense X-ray and neutron radiation flash-vaporizes a layer of the asteroid's surface, creating a powerful ablative force that pushes the asteroid without shattering it. This is a high-power, last-resort option.</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="ui">
+    <div style="display:flex; justify-content:space-between; gap:1rem;">
+      
+      <div class="panel">
+        <h1 class="text-2xl font-bold text-cyan-300">Project AVERT</h1>
+        <p class="small">Asteroid Visualization & Emergency Response</p>
+        
+        <div class="mt-4">
+            <label class="small">Filter Real Threats by Size:</label>
+            <div id="filter-container" class="flex gap-2 mt-1 mb-2">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="small"> &lt; 100m</button>
+                <button class="filter-btn" data-filter="medium">100m - 1km</button>
+                <button class="filter-btn" data-filter="large">&gt; 1km</button>
+            </div>
+            <select id="asteroid-select" class="custom-select w-full">
+                <option>Loading scenarios...</option>
+            </select>
+        </div>
+      </div>
+      
+      <div id="impact-panel" class="panel hidden">
+        <h2 class="text-red-400">Impact Assessment</h2>
+        <h3 id="event-title" class="text-lg font-bold text-amber-300"></h3>
+        <p class="small">Location: <strong id="impact-location-text">Jabalpur, India</strong></p>
+        <div id="energy-details" class="small mt-2"></div>
+        <div id="impact-details" class="small mt-3"></div>
+      </div>
+      
+      <div id="target-panel" class="hud-panel text-right">
+        <div class="hud-frame">
+            <div class="hud-corner top-left"></div>
+            <div class="hud-corner top-right"></div>
+            <div class="hud-corner bottom-left"></div>
+            <div class="hud-corner bottom-right"></div>
+
+            <div class="hud-content">
+                <div class="hud-data-field">
+                    <span class="hud-label">TARGET ACQUIRED</span>
+                    <span id="hud-asteroid-name" class="hud-value text-yellow-300">Fetching...</span>
+                </div>
+                <div class="hud-data-field">
+                    <span class="hud-label">PREDICTED IMPACT</span>
+                    <span id="hud-impact-location" class="hud-value text-cyan-300">Jabalpur</span>
+                </div>
+                <div class="hud-data-field">
+                    <span class="hud-label">THREAT STATUS</span>
+                    <span id="hud-status-text" class="hud-value status-danger">On Collision Course</span>
+                </div>
+            </div>
+        </div>
+      </div>
+      </div>
+
+    <div style="margin-top:1rem;">
+      <div class="panel">
+        <h2>Simulation Controls</h2>
+        <button id="randomize-impact-btn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2 rounded mb-4">Randomize Impact Trajectory</button>
+        <p class="small">Adjust parameters to model threat & test mitigation.</p>
+        <div class="controls">
+          <button id="simulate-impact-btn" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold py-2 rounded">Simulate Impact</button>
+          <button id="return-globe-btn" class="bg-gray-600 hover:bg-gray-500 text-white font-semibold py-2 rounded hidden">Return to Globe View</button>
+          <div id="mitigation-controls" class="mt-2 space-y-4">
+              <div id="diameter-slider-container">
+                  <div class="slider-label small"><label>Asteroid Diameter</label><span id="diameter-value">500 m</span></div>
+                  <input id="diameter-slider" class="param-slider lockable-slider" type="range" min="0.01" max="10" value="0.5" step="0.01" />
+              </div>
+              <div>
+                  <div class="slider-label small"><label>Impact Velocity</label><span id="velocity-value">25.0 km/s</span></div>
+                  <input id="velocity-slider" class="param-slider" type="range" min="12" max="72" value="25" step="0.5" />
+              </div>
+              <div>
+                  <div class="slider-label small"><label>Composition (Density)</label><span id="density-value">Rocky (2700 kg/m³)</span></div>
+                  <input id="density-slider" class="param-slider lockable-slider" type="range" min="1000" max="8000" value="2700" step="100" />
+              </div>
+              <div>
+                  <div class="slider-label small"><label>Impact Angle</label><span id="angle-value">90° (Direct)</span></div>
+                  <input id="angle-slider" class="param-slider" type="range" min="15" max="90" value="90" step="1" />
+              </div>
+              <div class="pt-2 border-t border-slate-700">
+                  <div class="slider-label small">
+                      <label>Mitigation: <a id="show-modal-btn" href="#" class="info-link">Strategy Info</a></label>
+                      <select id="mitigation-select" class="custom-select w-1/2">
+                          <option value="nudge">Kinetic Nudge</option>
+                          <option value="tractor">Gravity Tractor</option>
+                          <option value="laser">Laser Ablation</option>
+                          <option value="nuclear">Nuclear Standoff</option>
+                      </select>
+                  </div>
+                  <div class="slider-label small mt-2"><label id="mitigation-slider-label">Nudge Power</label><span id="mitigation-value">0%</span></div>
+                  <input id="mitigation-slider" type="range" min="0" max="100" value="0" />
+                  <p id="mitigation-description" class="small text-center mt-1">Apply deflection force</p>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>
